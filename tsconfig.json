@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "target": "esnext",                // or another ECMAScript version
+    "module": "esnext",                // keep this as 'esnext'
+    "jsx": "react-jsx",                // Add this line for JSX support
+    "baseUrl": "./",
+    "paths": {
+      "@/components/*": ["./src/components/*"],
+      "@/lib/*": ["./src/lib/*"]
+    },
+    "moduleResolution": "node",         // Ensure module resolution is set to node
+    "esModuleInterop": true,            // Optional
+    "skipLibCheck": true,               // Optional
+    "strict": true                      // Optional
+  },
+  "include": ["src"],
+  "exclude": ["node_modules"]
+}
