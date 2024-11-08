@@ -24,7 +24,7 @@ const Login: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:8080/api/auth/login', formData);
+      const response = await axios.post('https://communion.onrender.com/api/auth/login', formData);
       if (response.data.token) {
         // Store token and username in localStorage
         localStorage.setItem('token', response.data.token); // Store token for later use

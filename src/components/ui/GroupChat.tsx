@@ -23,7 +23,7 @@ export default function GroupChat() {
       return;
     }
 
-    socketRef.current = new WebSocket("ws://localhost:8080");
+    socketRef.current = new WebSocket("wss://communion.onrender.com");
 
     socketRef.current.onopen = () => {
       socketRef.current?.send(

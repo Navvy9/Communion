@@ -32,7 +32,7 @@ const Register: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:8080/api/auth/register', formData);
+      await axios.post('https://communion.onrender.com/api/auth/register', formData);
       setMessage('Registration successful! Redirecting to login...');
       setIsError(false);
       setTimeout(() => navigate('/login'), 2000);
