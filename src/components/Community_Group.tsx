@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface Religion {
   name: string;
@@ -37,14 +38,19 @@ const religions: Religion[] = [
 export default function CommunityGroup() {
   const [showModal, setShowModal] = useState(false);
   const [selectedReligion, setSelectedReligion] = useState<Religion | null>(null);
+  const [selectedGroup, setSelectedGroup] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  const handleJoinClick = (religion: Religion) => {
+  const handleJoinClick = (religion: Religion, group: string) => {
     setSelectedReligion(religion);
+    setSelectedGroup(group);
     setShowModal(true);
   };
 
   const handleNextClick = () => {
-    window.location.href = 'https://chat-app-nest.vercel.app/';
+    if (selectedReligion && selectedGroup) {
+      navigate(`/chat/${selectedReligion.name}/${selectedGroup}`);
+    }
   };
 
   return (
@@ -72,12 +78,15 @@ export default function CommunityGroup() {
                 <td className="p-4 font-medium">{religion.name}</td>
                 <td className="p-4">{religion.groups.join(', ')}</td>
                 <td className="p-4 text-center">
-                  <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
-                    onClick={() => handleJoinClick(religion)} // Open modal on Join click
-                  >
-                    Join
-                  </button>
+                  {religion.groups.map((group, idx) => (
+                    <button
+                      key={idx}
+                      className="bg-blue-500 text-white px-4 py-2 m-1 rounded hover:bg-blue-600 transition-all"
+                      onClick={() => handleJoinClick(religion, group)} // Open modal on Join click
+                    >
+                      Join {group}
+                    </button>
+                  ))}
                 </td>
               </tr>
             ))}
@@ -96,7 +105,7 @@ export default function CommunityGroup() {
             >
               &times;
             </button>
-            <h2 className="text-xl font-semibold mb-4">{selectedReligion.name}</h2>
+            <h2 className="text-xl font-semibold mb-4">{selectedReligion.name} - {selectedGroup}</h2>
             <p className="mb-4">{selectedReligion.description}</p>
             <button
               className="mt-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-all"
