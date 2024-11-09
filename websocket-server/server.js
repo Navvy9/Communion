@@ -13,7 +13,7 @@ const PORT = process.env.PORT || 8080;
 const User = require("./models/User");
 
 //cors setup
-const allowedOrigin = "https://communion-nmleeiqbr-navdeep-rajpurohits-projects.vercel.app/";  // Vercel frontend URL
+const allowedOrigin = "https://communion-git-master-navdeep-rajpurohits-projects.vercel.app/";  // Vercel frontend URL
 app.use(cors({
   origin: allowedOrigin,
   methods: ["GET", "POST", "PUT", "DELETE"],
