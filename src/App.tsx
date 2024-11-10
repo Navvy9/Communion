@@ -17,12 +17,7 @@ import HelpAlert from './components/ui/HelpAlert/HelpAlert';
 
 
 function App() {
-  const RedirectTOExternal: React.FC = ()=>{
-    useEffect(()=>{
-      window.location.href='https://chat-app-nest.vercel.app/'
-    },[]);
-    return null;
-  }
+  
   
 
   return (
@@ -37,6 +32,7 @@ function App() {
       <Route path="/chat/:religion/:group" element={<GroupChat />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path='*' element={<EnhancedFeaturesShowcase />} /> {/* Catch-all route */}
       
       
     </Routes>
