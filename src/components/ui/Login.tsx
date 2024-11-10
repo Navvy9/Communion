@@ -1,7 +1,6 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
 
 interface FormData {
   email: string;
@@ -87,9 +86,9 @@ const Login: React.FC = () => {
         </form>
         <p className="text-sm text-center">
           Don&apos;t have an account?{' '}
-          <Link to="/register" className="text-blue-600 hover:underline">
-  Register
-</Link>
+          <a href="/register" className="text-blue-600 hover:underline">
+            Register
+          </a>
         </p>
       </div>
     </div>

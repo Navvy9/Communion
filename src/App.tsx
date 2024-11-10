@@ -32,7 +32,7 @@ function App() {
       <Route path="/chat/:religion/:group" element={<GroupChat />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
-      <Route path='*' element={<EnhancedFeaturesShowcase />} /> {/* Catch-all route */}
+      
       
       
     </Routes>
