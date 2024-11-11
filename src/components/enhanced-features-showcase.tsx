@@ -53,7 +53,7 @@ export function EnhancedFeaturesShowcase() {
   const handleJoinClick = () => {
     if (!isUserLoggedIn) {
       // Redirect to login if the user is not logged in
-      navigate("/login");
+      navigate("/AuthPage");
     } else {
       // Navigate to the main community page if logged in
       navigate("/community");
