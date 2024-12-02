@@ -3,6 +3,7 @@ import dayjs from "dayjs";
 import "dayjs/locale/en";
 
 interface Event {
+  _id?: string; // MongoDB will generate this
   date: string;
   eventName: string;
   venue: string;
@@ -10,57 +11,134 @@ interface Event {
   participants: number;
 }
 
-const initialEvents: Event[] = [
-  {
-    date: "2024-10-11",
-    eventName: "Durga Puja",
-    venue: "Community Hall",
-    description:
-      "Durga Puja celebrates the victory of Goddess Durga over the demon Mahishasura.",
-    participants: 15,
-  },
-  {
-    date: "2024-10-13",
-    eventName: "Dussehra",
-    venue: "Main Square",
-    description: "Dussehra marks the victory of Lord Rama over Ravana.",
-    participants: 30,
-  },
-];
-
-const daysInMonth = (month: number, year: number) => new Date(year, month, 0).getDate();
-
 const ReligiousEventsCalendar: React.FC = () => {
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [events, setEvents] = useState<Event[]>([]);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isEventFormOpen, setIsEventFormOpen] = useState(false);
   const [currentDate, setCurrentDate] = useState(dayjs());
 
+  // Fetch events from API
   useEffect(() => {
-    const interval = setInterval(() => setCurrentDate(dayjs()), 60000);
-    return () => clearInterval(interval);
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch("http://localhost:8080/api/events", {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        });
+        const data = await response.json();
+        if (response.ok) {
+          setEvents(data);
+        } else {
+          console.error("Failed to fetch events:", data.message);
+        }
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    fetchEvents();
   }, []);
 
-  const handleEventSubmit = (event: Event) => {
-    setEvents((prevEvents) => [...prevEvents, event]);
-    setIsEventFormOpen(false);
+  // Add a new event
+  const handleEventSubmit = async (event: Event) => {
+    try {
+      const response = await fetch("http://localhost:8080/api/events", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify(event),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setEvents((prevEvents) => [...prevEvents, data]);
+        setIsEventFormOpen(false);
+      } else {
+        alert(`Failed to add event,Please login: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error adding event:", error);
+      alert("please login!");
+    }
   };
 
-  const handleParticipate = (event: Event) => {
-    setEvents((prevEvents) =>
-      prevEvents.map((e) =>
-        e === event ? { ...e, participants: e.participants + 1 } : e
-      )
-    );
+  // Delete an event
+  const handleDeleteEvent = async (event: Event) => {
+    if (!window.confirm("Are you sure you want to delete this event?")) return;
+
+    try {
+      const response = await fetch(
+        `http://localhost:8080/api/events/${event._id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        setEvents((prevEvents) =>
+          prevEvents.filter((e) => e._id !== event._id)
+        );
+        setSelectedEvent(null);
+        alert("Event deleted successfully.");
+      } else {
+        const data = await response.json();
+        alert(`Failed to delete event,please login: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+      alert("An error occurred while deleting the event.");
+    }
   };
 
+  // Participate in an event
+  const handleParticipate = async (event: Event) => {
+    try {
+      // Update participant count in the backend
+      const response = await fetch(
+        `http://localhost:8080/api/events/${event._id}/participate`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+  
+      if (response.ok) {
+        const updatedEvent = await response.json(); // Backend returns the updated event
+        // Update the event in the local state
+        setEvents((prevEvents) =>
+          prevEvents.map((e) => (e._id === updatedEvent._id ? updatedEvent : e))
+        );
+      } else {
+        const error = await response.json();
+        console.error("Failed to update participation:", error.message);
+        alert(`Error: ${error.message}`);
+      }
+    } catch (error) {
+      console.error("Error during participation update:", error);
+      alert("An error occurred while updating participation.please login");
+    }
+  };
+  
+
+  // Render calendar days
   const renderCalendar = () => {
-    const numDays = daysInMonth(currentDate.month() + 1, currentDate.year());
+    const daysInMonth = new Date(
+      currentDate.year(),
+      currentDate.month() + 1,
+      0
+    ).getDate();
     const monthEvents = events.filter(
       (event) => new Date(event.date).getMonth() === currentDate.month()
     );
 
-    return Array.from({ length: numDays }, (_, i) => {
+    return Array.from({ length: daysInMonth }, (_, i) => {
       const day = i + 1;
       const fullDate = `${currentDate.year()}-${String(
         currentDate.month() + 1
@@ -147,6 +225,12 @@ const ReligiousEventsCalendar: React.FC = () => {
               onClick={() => handleParticipate(selectedEvent)}
             >
               Participate
+            </button>
+            <button
+              className="w-full bg-red-500 text-white font-bold py-2 mt-4 rounded hover:bg-red-600 transition"
+              onClick={() => handleDeleteEvent(selectedEvent)}
+            >
+              Delete Event
             </button>
           </div>
         </div>

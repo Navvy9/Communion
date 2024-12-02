@@ -21,8 +21,8 @@ const AuthPage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const url = isLogin
-            ? 'https://communion.onrender.com/api/auth/login'
-            : 'https://communion.onrender.com/api/auth/register';
+            ? 'http://localhost:8080/api/auth/login'
+            : 'http://localhost:8080/api/auth/register';
         try {
             const response = await axios.post(url, formData);
             console.log('Server Response:', response); // Log the response for debugging

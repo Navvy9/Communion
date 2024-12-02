@@ -15,31 +15,43 @@ export default function GroupChat() {
   const socketRef = useRef<WebSocket | null>(null);
 
   // Ensure username is always a string
-  const username = localStorage.getItem("username") || "Anonymous";
+  const username = localStorage.getItem("username") || "";
 
-  useEffect(() => {
-    if (!username) {
-      navigate("/login");
+  useEffect(()=>{
+    if(!username){
+      navigate("/AuthPage");
       return;
     }
+  },[username,navigate]);
 
-    socketRef.current = new WebSocket("wss://communion.onrender.com");
 
+  useEffect(() => {
+    if(!username) return;
+    socketRef.current = new WebSocket("ws://localhost:8080");
+  
     socketRef.current.onopen = () => {
       socketRef.current?.send(
         JSON.stringify({ type: "join-group", group, username })
       );
     };
-
+  
     socketRef.current.onmessage = (event) => {
-      const messageData: Message = JSON.parse(event.data);
-      setMessages((prevMessages) => [...prevMessages, messageData]);
+      const messageData = JSON.parse(event.data);
+  
+      if (messageData.type === "previous-messages") {
+        // Load previous messages
+        setMessages(messageData.messages);
+      } else {
+        // Add new message to the chat
+        setMessages((prevMessages) => [...prevMessages, messageData]);
+      }
     };
-
+  
     return () => {
       socketRef.current?.close();
     };
   }, [group, username, navigate]);
+  ;
 
   const sendMessage = () => {
     if (newMessage.trim()) {

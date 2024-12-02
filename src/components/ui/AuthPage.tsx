@@ -37,8 +37,8 @@ const AuthPage: React.FC = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     const url = isLogin
-      ? 'https://communion.onrender.com/api/auth/login'
-      : 'https://communion.onrender.com/api/auth/register';
+      ? 'http://localhost:8080/api/auth/login'
+      : 'http://localhost:8080/api/auth/register';
 
     try {
       const response = await axios.post(url, formData);
