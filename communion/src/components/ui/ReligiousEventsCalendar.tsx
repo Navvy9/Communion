@@ -55,11 +55,11 @@ const ReligiousEventsCalendar: React.FC = () => {
         setEvents((prevEvents) => [...prevEvents, data]);
         setIsEventFormOpen(false);
       } else {
-        alert(`Failed to add event,Please login: ${data.message}`);
+        alert(`Failed to add event, please login: ${data.message}`);
       }
     } catch (error) {
       console.error("Error adding event:", error);
-      alert("please login!");
+      alert("Please login!");
     }
   };
 
@@ -86,7 +86,7 @@ const ReligiousEventsCalendar: React.FC = () => {
         alert("Event deleted successfully.");
       } else {
         const data = await response.json();
-        alert(`Failed to delete event,please login: ${data.message}`);
+        alert(`Failed to delete event, please login: ${data.message}`);
       }
     } catch (error) {
       console.error("Error deleting event:", error);
@@ -122,10 +122,9 @@ const ReligiousEventsCalendar: React.FC = () => {
       }
     } catch (error) {
       console.error("Error during participation update:", error);
-      alert("An error occurred while updating participation.please login");
+      alert("An error occurred while updating participation. Please login.");
     }
   };
-  
 
   // Render calendar days
   const renderCalendar = () => {
@@ -151,9 +150,7 @@ const ReligiousEventsCalendar: React.FC = () => {
       return (
         <div
           key={day}
-          className={`relative p-3 border rounded-lg cursor-pointer transition transform hover:scale-105 w-32 h-32 ${
-            isToday ? "bg-blue-100 border-blue-500" : "bg-white border-gray-300"
-          }`}
+          className={`relative p-3 border rounded-lg cursor-pointer transition transform hover:scale-105 w-24 h-24 md:w-32 md:h-32 ${isToday ? "bg-blue-100 border-blue-500" : "bg-white border-gray-300"}`}
           onClick={() => event && setSelectedEvent(event)}
         >
           <span className="text-lg font-semibold text-gray-700">{day}</span>
@@ -178,7 +175,7 @@ const ReligiousEventsCalendar: React.FC = () => {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center h-screen  text-gray-800">
+    <div className="relative flex flex-col items-center justify-center h-screen text-gray-800 px-4 sm:px-6 lg:px-8">
       <h1 className="text-3xl font-bold my-6 text-blue-600 drop-shadow-md">
         Events Calendar
       </h1>
@@ -198,7 +195,7 @@ const ReligiousEventsCalendar: React.FC = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-7 gap-3 max-w-4xl">{renderCalendar()}</div>
+      <div className="grid grid-cols-7 gap-3 max-w-4xl sm:grid-cols-7 md:grid-cols-7 lg:grid-cols-7 xl:grid-cols-7">{renderCalendar()}</div>
 
       {/* Event Modal */}
       {selectedEvent && (
